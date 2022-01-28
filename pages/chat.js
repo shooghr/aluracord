@@ -4,22 +4,29 @@ import appConfig from '../config.json';
 
 export default function ChatPage() {
     // Sua lógica vai aqui
-    const [mensagem, setMensagem] = React.useState('');
-    const [listMensagem, setListMensagem] = React.useState([])
+    const [mensage, setMensage] = React.useState('');
+    const [listMensage, setListMensage] = React.useState([])
 
     // ./Sua lógica vai aqui
     function handleNewMensage(newMensage) {
-      const mensagem = {
-        id: listMensagem.length + 1,
+      const mensage = {
+        id: listMensage.length + 1,
         of: 'vanessametonini',
         text: newMensage
       }
 
-      setListMensagem([
-        mensagem,
-        ...listMensagem
+      setListMensage([
+        mensage,
+        ...listMensage
       ])
-      setMensagem('')
+      setMensage('')
+    }
+
+    function handleDeleteMensage(id) {
+        console.log(id)
+        setListMensage(
+            listMensage.filter( mensage => mensage.id != id)
+        )
     }
 
     return (
@@ -61,7 +68,7 @@ export default function ChatPage() {
                 >
 
                     {/* <MessageList mensagens={[]} /> */}
-                    <MessageList mensagens={listMensagem}/>
+                    <MessageList mensages={listMensage}  deleteMensage={handleDeleteMensage} />
 
                     <Box
                         as="form"
@@ -71,17 +78,17 @@ export default function ChatPage() {
                         }}
                     >
                         <TextField
-                            value={mensagem}
+                            value={mensage}
                             onChange={ event => {
-                              setMensagem(event.target.value)
+                              setMensage(event.target.value)
                             }}
                             onKeyPress={ event => {
                               if(event.key === 'Enter') {
                                 event.preventDefault()
-                                handleNewMensage(mensagem)
+                                handleNewMensage(mensage)
                               }
                             }}
-                            placeholder="Insira sua mensagem aqui..."
+                            placeholder="Insira sua mensage aqui..."
                             type="textarea"
                             styleSheet={{
                                 width: '100%',
@@ -99,7 +106,7 @@ export default function ChatPage() {
                             label="Send"
                             onClick={ event => {
                                 event.preventDefault()
-                                handleNewMensage(mensagem)
+                                handleNewMensage(mensage)
                             }}
                             buttonColors={{
                                 contrastColor: appConfig.theme.colors.neutrals["000"],
@@ -155,10 +162,10 @@ function MessageList(props) {
                 marginBottom: '16px',
             }}
         >
-            { props.mensagens.map( mensagem => {
+            { props.mensages.map( mensage => {
                 return (
                     <Text
-                        key={mensagem.id}
+                        key={mensage.id}
                         tag="li"
                         styleSheet={{
                             borderRadius: '5px',
@@ -172,6 +179,7 @@ function MessageList(props) {
                         <Box
                             styleSheet={{
                                 marginBottom: '8px',
+                                display: 'flex',
                             }}
                         >
                             <Image
@@ -185,7 +193,7 @@ function MessageList(props) {
                                 src={`https://github.com/vanessametonini.png`}
                             />
                             <Text tag="strong">
-                                {mensagem.of}
+                                {mensage.of}
                             </Text>
                             <Text
                                 styleSheet={{
@@ -197,8 +205,24 @@ function MessageList(props) {
                             >
                                 {(new Date().toLocaleDateString())}
                             </Text>
+                            <Button
+                                iconName="times"
+                                onClick={ event => {
+                                    event.preventDefault()
+                                    console.log(props)
+                                    props.deleteMensage(mensage.id)
+                                }}
+                                variant='tertiary'
+                                colorVariant='neutral'
+                                styleSheet={{
+                                    width: '25px',
+                                    height: '25px',
+                                    position: 'absolute',
+                                    right: '45px',
+                                }}
+                            />
                         </Box>
-                        {mensagem.text}
+                        {mensage.text}
                     </Text>
                 )
             })}

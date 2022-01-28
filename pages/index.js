@@ -34,7 +34,8 @@ function Titulo(props) {
 
 export default function PaginaInicial() {
   // const username = 'omariosouto';
-  const [username, setUsername] = React.useState('omariosouto');
+  const [username, setUsername] = React.useState('');
+  const [usernameGitHub, setUsernameGitHub] = React.useState('');
   const roteamento = useRouter();
 
   return (
@@ -96,12 +97,15 @@ export default function PaginaInicial() {
             <TextField
               value={username}
               onChange={function (event) {
-                console.log('usuario digitou', event.target.value);
                 // Onde ta o valor?
                 const valor = event.target.value;
-                // Trocar o valor da variavel
-                // através do React e avise quem precisa
+                console.log('usuario digitou', event.target.value);
                 setUsername(valor);
+                if (valor.length >= 3) {
+                  setUsernameGitHub(valor)
+                } else {
+                  setUsernameGitHub('')
+                }
               }}
               fullWidth
               textFieldColors={{
@@ -129,7 +133,7 @@ export default function PaginaInicial() {
 
 
           {/* Photo Area */}
-          <Box
+          {/* <Box
             styleSheet={{
               display: 'flex',
               flexDirection: 'column',
@@ -149,7 +153,7 @@ export default function PaginaInicial() {
                 borderRadius: '50%',
                 marginBottom: '16px',
               }}
-              src={`https://github.com/${username}.png`}
+              src={`https://github.com/${usernameGitHub}.png`}
             />
             <Text
               variant="body4"
@@ -160,9 +164,9 @@ export default function PaginaInicial() {
                 borderRadius: '1000px'
               }}
             >
-              {username}
+              {usernameGitHub}
             </Text>
-          </Box>
+          </Box> */}
           {/* Photo Area */}
         </Box>
       </Box>

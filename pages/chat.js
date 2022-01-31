@@ -28,14 +28,13 @@ export default function ChatPage() {
         supabaseClient
         .from('mensages')
         .select('*')
+        .order('id', { ascending: false })
         .then( ({ data }) => {
             if ( data !== null ) {
                 setListMensage(data)
             }
-            console.log('Data: ')
-            console.log(data)
         })
-    }, [listMensage])
+    }, [])
 
     // ./Sua lógica vai aqui
     function handleNewMensage(newMensage) {
@@ -60,10 +59,13 @@ export default function ChatPage() {
     }
 
     function handleDeleteMensage(id) {
-        console.log(id)
-        setListMensage(
-            listMensage.filter( mensage => mensage.id != id)
-        )
+        supabaseClient
+            .from('mensages')
+            .delete()
+            .match({ id: id })
+            .then( response => {
+                console.log(response)
+            })
     }
 
     return (
@@ -105,7 +107,7 @@ export default function ChatPage() {
                 >
 
                     {/* <MessageList mensagens={[]} /> */}
-                    <MessageList mensages={listMensage}  deleteMensage={handleDeleteMensage} />
+                    {/* <MessageList mensages={listMensage}  deleteMensage={handleDeleteMensage} /> */}
 
                     <Box
                         as="form"

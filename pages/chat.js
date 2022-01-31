@@ -1,24 +1,61 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
 import appConfig from '../config.json';
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlhdCI6MTY0MzQxODcwOSwiZXhwIjoxOTU4OTk0NzA5fQ.PUS63PyPU7RcofsoLnvyWtcTNKd7K17QuCyVK927kcM'
+const supabaseUrl = 'https://bkkykknzdkusixuznkxq.supabase.co'
+const supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
+
+// fetch(`${supabase_url}/rest/v1/mensagens?select=*`, {
+//     headers: {
+//         'Content-Type': 'application/json',
+//         'apikey': 'supabase_anon_key',
+//         'Authorization': 'Bearer' + supabase_anon_key,
+//     }
+// }).then( res => {
+//     return res.json
+// }).then( response => {
+//     console.log(response)
+// })
 
 export default function ChatPage() {
     // Sua lógica vai aqui
     const [mensage, setMensage] = React.useState('');
     const [listMensage, setListMensage] = React.useState([])
 
+    React.useEffect(() => {
+        supabaseClient
+        .from('mensages')
+        .select('*')
+        .then( ({ data }) => {
+            if ( data !== null ) {
+                setListMensage(data)
+            }
+            console.log('Data: ')
+            console.log(data)
+        })
+    }, [listMensage])
+
     // ./Sua lógica vai aqui
     function handleNewMensage(newMensage) {
       const mensage = {
-        id: listMensage.length + 1,
-        of: 'vanessametonini',
-        text: newMensage
+        de: 'vanessametonini',
+        texto: newMensage
       }
 
-      setListMensage([
-        mensage,
-        ...listMensage
-      ])
+      supabaseClient
+        .from('mensages')
+        .insert([
+            mensage
+        ])
+        .then( ({ data }) => {
+            setListMensage([
+                data[0],
+                ...listMensage
+            ])
+        })
+
       setMensage('')
     }
 
@@ -190,10 +227,10 @@ function MessageList(props) {
                                     display: 'inline-block',
                                     marginRight: '8px',
                                 }}
-                                src={`https://github.com/vanessametonini.png`}
+                                src={`https://github.com/${mensage.de}.png`}
                             />
                             <Text tag="strong">
-                                {mensage.of}
+                                {mensage.de}
                             </Text>
                             <Text
                                 styleSheet={{
@@ -222,7 +259,7 @@ function MessageList(props) {
                                 }}
                             />
                         </Box>
-                        {mensage.text}
+                        {mensage.texto}
                     </Text>
                 )
             })}

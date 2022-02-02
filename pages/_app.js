@@ -22,6 +22,23 @@ function GlobalStyle() {
     #__next > * {
       flex: 1;
     }
+
+    @keyframes animate {
+      from {
+        transform: scale(0.5) rotate(0deg);
+        opacity: 0.0;
+      }
+
+      to {
+        transform: scale(0.9) rotate(359deg);
+        opacity: 0.9;
+      }
+    }
+
+    .transform {
+      animation: animate 1s infinite linear;
+
+    }
     /* ./App fit Height */ 
   `}</style>
   );

@@ -1,5 +1,6 @@
 import { Box, Text, TextField, Image, Button } from '@skynexui/components';
 import React from 'react';
+import SVG from 'next/image';
 import appConfig from '../config.json';
 import { createClient } from '@supabase/supabase-js'
 
@@ -64,7 +65,7 @@ export default function ChatPage() {
             .delete()
             .match({ id: id })
             .then( response => {
-                console.log(response)
+                setListMensage(listMensage.filter( item => item.id !==  id))
             })
     }
 
@@ -106,8 +107,8 @@ export default function ChatPage() {
                     }}
                 >
 
-                    {/* <MessageList mensagens={[]} /> */}
-                    {/* <MessageList mensages={listMensage}  deleteMensage={handleDeleteMensage} /> */}
+                    {/* <MessageList mensages={[]} deleteMensage={handleDeleteMensage} /> */}
+                    <MessageList mensages={listMensage} deleteMensage={handleDeleteMensage} />
 
                     <Box
                         as="form"
@@ -188,7 +189,7 @@ function Header() {
 }
 
 function MessageList(props) {
-    console.log('MessageList', props);
+  
     return (
         <Box
             tag="ul"
@@ -201,6 +202,19 @@ function MessageList(props) {
                 marginBottom: '16px',
             }}
         >
+            { props.mensages.length === 0 && 
+                <Box tag="div"
+                     styleSheet={{
+                        position: 'relative',
+                        height: '50%',
+                        top: '-25%'
+                     }}
+                >
+                    <SVG layout="fill"
+                        src="/images/react-2.svg"
+                        className="transform"/>
+                </Box>
+            }
             { props.mensages.map( mensage => {
                 return (
                     <Text
@@ -230,6 +244,14 @@ function MessageList(props) {
                                     marginRight: '8px',
                                 }}
                                 src={`https://github.com/${mensage.de}.png`}
+                                onMouseEnter={ event => {
+                                    event.target.style.width = '35px';
+                                    event.target.style.height = '35px';
+                                }}
+                                onMouseLeave={ event => {
+                                    event.target.style.width = '25px';
+                                    event.target.style.height = '25px';
+                                }}
                             />
                             <Text tag="strong">
                                 {mensage.de}
@@ -247,8 +269,6 @@ function MessageList(props) {
                             <Button
                                 iconName="times"
                                 onClick={ event => {
-                                    event.preventDefault()
-                                    console.log(props)
                                     props.deleteMensage(mensage.id)
                                 }}
                                 variant='tertiary'
